@@ -141,17 +141,11 @@ namespace WebDirectory.Models.Directory
         public string GetContent(string path)
         {
             string value;
-            
-            using (StreamReader sr = new StreamReader(path,Encoding.UTF8))
+
+            using (StreamReader sr = new StreamReader(path, Encoding.UTF8))
             {
                 value = sr.ReadToEnd();
-
-                if(value.Length > 4000)
-                {
-                    value = "";
-                }
-               
-            }
+            } 
 
             return value;
         }

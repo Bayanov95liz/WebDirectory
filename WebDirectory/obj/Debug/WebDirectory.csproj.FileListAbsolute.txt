@@ -95,8 +95,8 @@ C:\Users\Ильдус\source\repos\WebDirectory\WebDirectory\bin\Microsoft.AspNe
 C:\Users\Ильдус\source\repos\WebDirectory\WebDirectory\bin\Microsoft.AspNetCore.Routing.Abstractions.xml
 C:\Users\Ильдус\source\repos\WebDirectory\WebDirectory\bin\Microsoft.Net.Http.Headers.xml
 C:\Users\Ильдус\source\repos\WebDirectory\WebDirectory\bin\System.Text.Encodings.Web.xml
-C:\Users\Ильдус\source\repos\WebDirectory\WebDirectory\obj\Debug\WebDirectory.Migrations.AddDirectoryMigration.resources
-C:\Users\Ильдус\source\repos\WebDirectory\WebDirectory\obj\Debug\WebDirectory.csproj.GenerateResource.cache
 C:\Users\Ильдус\source\repos\WebDirectory\WebDirectory\bin\HtmlAgilityPack.dll
 C:\Users\Ильдус\source\repos\WebDirectory\WebDirectory\bin\HtmlAgilityPack.pdb
 C:\Users\Ильдус\source\repos\WebDirectory\WebDirectory\bin\HtmlAgilityPack.xml
+C:\Users\Ильдус\source\repos\WebDirectory\WebDirectory\obj\Debug\WebDirectory.Migrations.AddWebDirectoryMigration.resources
+C:\Users\Ильдус\source\repos\WebDirectory\WebDirectory\obj\Debug\WebDirectory.csproj.GenerateResource.cache

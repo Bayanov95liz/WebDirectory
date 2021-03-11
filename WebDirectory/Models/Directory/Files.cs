@@ -22,8 +22,7 @@ namespace WebDirectory.Models.Directory
         public int TypeCodeOfTheFile { get; set; }
         [Column("КодПапки")]
         public int FolderCode { get; set; }
-        [Column("Контент", TypeName = "nvarchar")]
-        [MaxLength]
+        [Column("Контент", TypeName = "nvarchar(max)")]
         public string Content { get; set; }
 
         [ForeignKey("FolderCode")]
