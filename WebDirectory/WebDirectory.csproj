@@ -187,9 +187,9 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\202103120757494_AddWebDirectoryMigration.cs" />
-    <Compile Include="Migrations\202103120757494_AddWebDirectoryMigration.designer.cs">
-      <DependentUpon>202103120757494_AddWebDirectoryMigration.cs</DependentUpon>
+    <Compile Include="Migrations\202103060655142_AddDirectoryMigration.cs" />
+    <Compile Include="Migrations\202103060655142_AddDirectoryMigration.designer.cs">
+      <DependentUpon>202103060655142_AddDirectoryMigration.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Directory\AppDbInitializer.cs" />
@@ -369,10 +369,11 @@
   <ItemGroup>
     <Folder Include="Content\icons\" />
     <Folder Include="Files\" />
+    <Folder Include="Views\Treeview\" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\202103120757494_AddWebDirectoryMigration.resx">
-      <DependentUpon>202103120757494_AddWebDirectoryMigration.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\202103060655142_AddDirectoryMigration.resx">
+      <DependentUpon>202103060655142_AddDirectoryMigration.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

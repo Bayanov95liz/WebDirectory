@@ -21,12 +21,15 @@ namespace WebDirectory.Controllers
         {
             return View();
         }
-        [HttpGet]
         public JsonResult GetTreeViewNode()
         {
             List<TreeViewNode> treeViewNode = new List<TreeViewNode>();
+            A_attr a_attr = new A_attr();
 
-            foreach(FileExtension fileExtension in directoryContext.FileExtensions) { }
+            foreach(FileExtension fileExtension in directoryContext.FileExtensions)
+            {
+
+            }
 
             foreach (Folder folder in directoryContext.Folders)
             {
@@ -39,10 +42,12 @@ namespace WebDirectory.Controllers
                 });
             }
 
+            List<Folder> folder1 = directoryContext.Folders.ToList();
+
 
             foreach(Files files in directoryContext.Files)
             {
-                A_attr a_attr = new A_attr() {title = files.Description};
+                a_attr = new A_attr() {title = files.Description};
                 treeViewNode.Add(new TreeViewNode() 
                 {
                     id = "file" + files.FileCode.ToString(), 
@@ -109,7 +114,7 @@ namespace WebDirectory.Controllers
             }
             catch(Exception e)
             {
-                return Json(e.Message);
+                return Json(e);
             }
 
       
@@ -131,7 +136,7 @@ namespace WebDirectory.Controllers
             }
             catch(Exception e)
             {
-                return Json(e.Message);
+                return Json(e);
             }
         }
 
@@ -143,27 +148,18 @@ namespace WebDirectory.Controllers
 
             path = path + "\\" + name;
 
-            string count = "";
-
-            while (Directory.Exists(path + count))
-            {
-                if (count == "") count = "0";
-                count = (Convert.ToInt32(count) + 1).ToString();
-            }
-
             try
             {
+                Directory.CreateDirectory(path);
 
-                var value =  Directory.CreateDirectory(path + count).Exists;
-
-                directoryContext.Folders.Add(new Folder() { Name = name + count, CodeOfTheParentFolder = id});
+                directoryContext.Folders.Add(new Folder() { Name = name, CodeOfTheParentFolder = id});
                 directoryContext.SaveChanges();
 
                 return Json(true);
             }
             catch(Exception e)
             {
-                return Json(e.Message);
+                return Json(e);
             }
             
       
@@ -222,7 +218,7 @@ namespace WebDirectory.Controllers
             }
             catch (Exception e)
             {
-                return Json(e.Message);
+                return Json(e.ToString());
             }
                 
         }
@@ -241,6 +237,7 @@ namespace WebDirectory.Controllers
         public FileResult GetStream(string id)
         {
             string path = PathName(id);
+            // Объект Stream
             FileStream fs = new FileStream(path, FileMode.Open);
             string file_type = "application/" + path.Substring(path.LastIndexOf(".") + 1);
             string file_name = path.Substring(path.LastIndexOf("\\") + 1);

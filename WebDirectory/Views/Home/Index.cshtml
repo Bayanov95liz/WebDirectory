@@ -62,7 +62,6 @@
             }
         });
 
-
         $('#jstree').on('rename_node.jstree', function (e, data) {
             $.ajax
                 ({
@@ -79,7 +78,7 @@
                             alert(response)
                             $('#jstree').jstree("refresh");
                         }
-
+                        
                     }
                 });
 
@@ -101,7 +100,7 @@
                             $('#jstree').jstree("refresh");
                         }
                         else {
-                            alert(response);
+                            alert(e);
                         }
                     }
                 });
@@ -129,16 +128,12 @@
                 });
         });
 
-        function CreateFolder() {
+       function CreateFolder() {
             var jstree = $('#jstree').jstree(true);
             var selectedNode = $('#jstree').jstree('get_selected', true);
            if (selectedNode && selectedNode.length > 0 && selectedNode[0].id != "0" && selectedNode[0].original.type == "folder") {
-               jstree.create_node(selectedNode[0]);
-               console.log(selectedNode[0]);
-           }
-           else
-            {
-               $("#jstree").jstree("create_node", null, null, "last");
+               selectedNode = selectedNode[0];
+               selectedNode = jstree.create_node(selectedNode);
             }
         }
 
@@ -175,45 +170,44 @@
             if (selectedNode && selectedNode.length > 0 && selectedNode[0].id != "0")
             {
                 var files = document.getElementById('file-input').files;
-                if (files.length > 0)
-                {
-                    if (window.FormData !== undefined) {
-                        var data = new FormData();
+                if (files.length > 0) {
+                if (window.FormData !== undefined) {
+                    var data = new FormData();
 
-                        if (selectedNode[0].original.type == "file") {
-                            data.append('id', selectedNode[0].original.parent);
-                        }
-                        else {
-                            data.append('id', selectedNode[0].original.id);
-                        }
-
-                        //Добавляем файлы
-                        for (var x = 0; x < files.length; x++) {
-                            data.append("file" + x, files[x]);
-                        }
-
-                        $.ajax({
-                            type: "POST",
-                            url: '@Url.Action("Upload", "Home")',
-                            contentType: false,
-                            processData: false,
-                            data : data,
-                            success: function (response) {
-                                console.log(response);
-                                if (response == true) {
-                                    $('#jstree').jstree("refresh");
-                                }
-                                else {
-                                    alert(response);
-                                }
-                            }
-
-                        });
-                    } else
-                    {
-                        alert("Браузер не поддерживает загрузку файлов HTML5!");
+                    if (selectedNode[0].original.type == "file") {
+                        data.append('id', selectedNode[0].original.parent);
                     }
+                    else {
+                        data.append('id', selectedNode[0].original.id);
+                    }
+
+                    //Добавляем файлы
+                    for (var x = 0; x < files.length; x++) {
+                        data.append("file" + x, files[x]);
+                    }
+
+                    $.ajax({
+                        type: "POST",
+                        url: '@Url.Action("Upload", "Home")',
+                        contentType: false,
+                        processData: false,
+                        data : data,
+                        success: function (response) {
+                            console.log(response);
+                            if (response == true) {
+                                $('#jstree').jstree("refresh");
+                            }
+                            else {
+                                alert(response);
+                            }
+                        }
+                        
+                    });
+                } else
+                {
+                    alert("Браузер не поддерживает загрузку файлов HTML5!");
                 }
+            }
 
             }
 
