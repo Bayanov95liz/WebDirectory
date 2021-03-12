@@ -148,18 +148,27 @@ namespace WebDirectory.Controllers
 
             path = path + "\\" + name;
 
+            string count = "";
+
+            while (Directory.Exists(path + count))
+            {
+                if (count == "") count = "0";
+                count = (Convert.ToInt32(count) + 1).ToString();
+            }
+
             try
             {
-                Directory.CreateDirectory(path);
 
-                directoryContext.Folders.Add(new Folder() { Name = name, CodeOfTheParentFolder = id});
+                var value =  Directory.CreateDirectory(path + count).Exists;
+
+                directoryContext.Folders.Add(new Folder() { Name = name + count, CodeOfTheParentFolder = id});
                 directoryContext.SaveChanges();
 
                 return Json(true);
             }
             catch(Exception e)
             {
-                return Json(e);
+                return Json(e.Message);
             }
             
       

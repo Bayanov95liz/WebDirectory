@@ -62,6 +62,7 @@
             }
         });
 
+
         $('#jstree').on('rename_node.jstree', function (e, data) {
             $.ajax
                 ({
@@ -78,7 +79,7 @@
                             alert(response)
                             $('#jstree').jstree("refresh");
                         }
-                        
+
                     }
                 });
 
@@ -100,7 +101,7 @@
                             $('#jstree').jstree("refresh");
                         }
                         else {
-                            alert(e);
+                            alert(response);
                         }
                     }
                 });
@@ -128,12 +129,16 @@
                 });
         });
 
-       function CreateFolder() {
+        function CreateFolder() {
             var jstree = $('#jstree').jstree(true);
             var selectedNode = $('#jstree').jstree('get_selected', true);
            if (selectedNode && selectedNode.length > 0 && selectedNode[0].id != "0" && selectedNode[0].original.type == "folder") {
-               selectedNode = selectedNode[0];
-               selectedNode = jstree.create_node(selectedNode);
+               jstree.create_node(selectedNode[0]);
+               console.log(selectedNode[0]);
+           }
+           else
+            {
+               $("#jstree").jstree("create_node", null, null, "last");
             }
         }
 
@@ -201,7 +206,7 @@
                                 alert(response);
                             }
                         }
-                        
+
                     });
                 } else
                 {
