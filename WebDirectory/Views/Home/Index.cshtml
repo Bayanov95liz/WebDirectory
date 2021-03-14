@@ -1,0 +1,238 @@
+﻿@{
+    ViewData["Title"] = "Index";
+}
+
+
+@Scripts.Render("~/scripts/jquery-3.5.1.js")
+@Scripts.Render("~/scripts/jquery.unobtrusive-ajax.js")
+
+
+
+@section scripts{
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.2.1/themes/default/style.min.css" />
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.12.1/jquery.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.2.1/jstree.min.js"></script>
+
+    <script type="text/javascript">
+        $('#jstree').jstree({
+            "plugins": ["wholerow", "types"],
+            'core': {
+                "check_callback": true,
+                "data":
+                {
+                    'url': "/Home/GetTreeViewNode/?lazy",
+                    'data': function (node) {
+                        return { 'id': node.id };
+                    }
+                }
+
+            },
+            "types": {
+                "folder": {
+                    "icon": "/Content/icons/folder.svg"
+                },
+            },
+        }).on('open_node.jstree', function (e, data) {
+            data.instance.set_icon(data.node, "/Content/icons/folder2-open.svg");
+        }).on('close_node.jstree', function (e, data) { data.instance.set_icon(data.node, "/Content/icons/folder.svg"); });
+
+
+        $('#jstree').on('dblclick.jstree', '.jstree-anchor', function (e) {
+
+            var instance = $.jstree.reference(this),
+                node = instance.get_node(this);
+
+            if (node.original.type == "file") {
+                    $.ajax
+                ({
+                    type: "POST",
+                    url: "@Url.Action("GetContentFile")",
+                    dataType: 'json',
+                    data:
+                    {
+                        "id": node.original.id,
+                    },
+                    success: function (response) {
+                        if (response != false) {
+
+                            AddNavTab(node.original.text, response);
+                        }
+                    }
+                });
+            }
+        });
+
+
+        $('#jstree').on('rename_node.jstree', function (e, data) {
+            $.ajax
+                ({
+                    type: "POST",
+                    url: "@Url.Action("Rename")",
+                    dataType: 'json',
+                    data:
+                    {
+                        "id": data.node.id,
+                        "name": data.node.text
+                    },
+                    success: function (response) {
+                        if (response != true) {
+                            alert(response)
+                            $('#jstree').jstree("refresh");
+                        }
+
+                    }
+                });
+
+        });
+
+        $('#jstree').on('create_node.jstree', function (e, data) {
+                $.ajax
+                ({
+                    type: "POST",
+                    url: "@Url.Action("CreateFolder")",
+                    dataType: 'json',
+                    data:
+                    {
+                        "id": data.parent,
+                        "name": data.node.text
+                    },
+                    success: function (response) {
+                        if (response == true) {
+                            $('#jstree').jstree("refresh");
+                        }
+                        else {
+                            alert(response);
+                        }
+                    }
+                });
+        });
+
+
+        $('#jstree').on('delete_node.jstree', function (e, data) {
+                $.ajax
+                ({
+                    type: "POST",
+                    url: (data.node.type == "folder")?"@Url.Action("DeleteFolder")":"@Url.Action("DeleteFile")",
+                    dataType: 'json',
+                    data:
+                    {
+                        "id": data.node.id
+                    },
+                    success: function (response) {
+                        if (response == true) {
+                            $('#jstree').jstree("refresh");
+                        }
+                        else {
+                            alert(e);
+                        }
+                    }
+                });
+        });
+
+        function CreateFolder() {
+            var jstree = $('#jstree').jstree(true);
+            var selectedNode = $('#jstree').jstree('get_selected', true);
+           if (selectedNode && selectedNode.length > 0 && selectedNode[0].id != "0" && selectedNode[0].original.type == "folder") {
+               jstree.create_node(selectedNode[0]);
+               console.log(selectedNode[0]);
+           }
+           else
+            {
+               $("#jstree").jstree("create_node", null, null, "last");
+            }
+        }
+
+        function DeleteFile() {
+            var jstree = $('#jstree').jstree(true);
+            var selectedNode = $('#jstree').jstree('get_selected', true);
+            if (selectedNode && selectedNode.length > 0 && selectedNode[0].id != "0" && selectedNode[0].original.type == "file") {
+                jstree.delete_node(selectedNode[0]);
+            }
+        }
+
+         function DeleteFolder() {
+            var jstree = $('#jstree').jstree(true);
+            var selectedNode = $('#jstree').jstree('get_selected', true);
+            if (selectedNode && selectedNode.length > 0 && selectedNode[0].id != "0" && selectedNode[0].original.type == "folder") {
+                jstree.delete_node(selectedNode[0]);
+            }
+        }
+
+
+        function Rename() {
+
+            var jstree = $('#jstree').jstree(true);
+            var selectedNode = $('#jstree').jstree('get_selected', true);
+            if (selectedNode && selectedNode.length > 0 && selectedNode[0].id != "0") {
+                jstree.edit(selectedNode[0]);
+            }
+        }
+
+        function UploadFile() {
+
+            var jstree = $('#jstree').jstree(true);
+            var selectedNode = $('#jstree').jstree('get_selected', true);
+            if (selectedNode && selectedNode.length > 0 && selectedNode[0].id != "0")
+            {
+                var files = document.getElementById('file-input').files;
+                if (files.length > 0)
+                {
+                    if (window.FormData !== undefined) {
+                        var data = new FormData();
+
+                        if (selectedNode[0].original.type == "file") {
+                            data.append('id', selectedNode[0].original.parent);
+                        }
+                        else {
+                            data.append('id', selectedNode[0].original.id);
+                        }
+
+                        //Добавляем файлы
+                        for (var x = 0; x < files.length; x++) {
+                            data.append("file" + x, files[x]);
+                        }
+
+                        $.ajax({
+                            type: "POST",
+                            url: '@Url.Action("Upload", "Home")',
+                            contentType: false,
+                            processData: false,
+                            data : data,
+                            success: function (response) {
+                                console.log(response);
+                                if (response == true) {
+                                    $('#jstree').jstree("refresh");
+                                }
+                                else {
+                                    alert(response);
+                                }
+                            }
+
+                        });
+                    } else
+                    {
+                        alert("Браузер не поддерживает загрузку файлов HTML5!");
+                    }
+                }
+
+            }
+
+
+        }
+
+
+        function DowlandFile() {
+
+            var selectedNode = $('#jstree').jstree('get_selected', true);
+            if (selectedNode && selectedNode.length > 0 && selectedNode[0].id != "0" && selectedNode[0].original.type == "file") {
+                var url =  '@Url.Action("GetStream", "Home")?id=' + selectedNode[0].id;
+                window.location.href = url;
+            }
+        }
+
+        $('#UploadFile').on('click', function () {
+            $('#file-input').trigger('click');
+        });
+
+    </script>
+}

@@ -1,0 +1,101 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title>@ViewBag.Title</title>
+    @Styles.Render("~/Content/css")
+    @RenderSection("styles", required: false)
+    @Scripts.Render("~/bundles/modernizr")
+    <script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js"></script>
+    <link href="@Url.Content("~/Content/Site.css")" rel="stylesheet" type="text/css" />
+</head>
+<body >
+    <div class="navbar-nav bd-navbar-nav flex-row">
+        <div class="navbar-inner">
+            <div class="container">
+                <button type="button" onclick="CreateFolder()" class="btn btn_main">Создать Папку</button>
+                <button type="button" onclick="DeleteFolder()" class="btn btn_main">Удалить Папку</button>
+
+                <button id="UploadFile" class="btn btn_main">Загрузить файл</button>
+                <input id="file-input" type="file" onchange="UploadFile()" name="upload" style="display: none;" />
+
+                <button type="button" onclick="DowlandFile()" class="btn btn_main">Скачать файл</button>
+                <button type="button" onclick="DeleteFile()" class="btn btn_main">Удалить файл</button>
+                <button type="button" onclick="Rename()" class="btn btn_main">Переименовать</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-4">
+            <div id="jstree">
+            </div>
+        </div>
+        <div class="col-md-8">
+            <nav>
+                <div class="nav nav-tabs" id="nav-tab" role="tablist">
+                    <a class="nav-item nav-link active" 
+                       id="new" data-bs-toggle="tab" 
+                       href="#nav-home" role="tab" 
+                       aria-controls="nav-home" 
+                       aria-selected="true">new
+                    </a>
+                </div>
+            </nav>
+            <div class="tab-content" id="nav-tabContent">
+
+            </div>
+        </div>
+    </div>
+    @RenderBody()
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
+    @RenderSection("scripts", required: false)
+</body>
+</html>
+
+<script>
+
+
+    //Событие переключения навигационной панели
+    function TabShow() {
+        var triggerTabList = [].slice.call(document.querySelectorAll('#nav-tab a'));
+        triggerTabList.forEach(function (triggerEl) {
+            var tabTrigger = new bootstrap.Tab(triggerEl)
+            triggerEl.addEventListener('click', function (event) {
+                event.preventDefault()
+                tabTrigger.show()
+            });
+        });
+       
+    }
+
+    function AddNavTab(name, content) {
+        var count = document.querySelectorAll('#nav-tab a').length;
+
+
+        if (document.getElementById("new") != null) {
+
+            count = 1;
+
+            $('#new').remove();
+            $('#nav-new').remove();
+
+            $('#nav-tab ').append($('<a class="nav-item nav-link active" id="nav-' + count + '-tab" data-bs-toggle="tab" href="#nav-' + count + '" role="tab" aria-controls="nav-' + count + '" aria-selected="false">' + name + '</a>'))
+            $('#nav-tabContent').append($('<div class="tab-pane fade show active" id="nav-' + count + '" role="tabpanel" aria-labelledby="nav-' + count + '-tab"> <div class="sourceCode"> <pre class= "prettyprints">  ' + PR.prettyPrintOne(content) + ' </pre> </div> </div>'));
+
+        } else
+        {
+            count++;
+
+            $('#nav-tab ').append($('<a class="nav-item nav-link" id="nav-' + count + '-tab" data-bs-toggle="tab" href="#nav-' + count + '" role="tab" aria-controls="nav-' + count + '" aria-selected="false">' + name + '</a>'));
+            $('#nav-tabContent').append($('<div class="tab-pane fade" id="nav-' + count + '" role="tabpanel" aria-labelledby="nav-' + count + '-tab"> <div class="sourceCode"> <pre class= "prettyprints">  ' + PR.prettyPrintOne(content) + ' </pre> </div> </div>'));
+        }
+
+        TabShow();
+    }
+
+
+
+ </script>
