@@ -61,11 +61,13 @@ namespace WebDirectory.Models.Directory
               
             }
 
+            //Заменяем полный путь папки на имя папки.
             folders = AddFolderName(folders);
 
             directoryContext.Folders.AddRange(folders);
             directoryContext.FileExtensions.AddRange(fileExtensions);
             directoryContext.Files.AddRange(files);
+
             directoryContext.SaveChanges();
 
         }
@@ -77,7 +79,7 @@ namespace WebDirectory.Models.Directory
 
             if(name.LastIndexOf(".") == -1)
             {
-                type = "earmark";
+                type = "unknown";
             }
             {
                  type = name.Substring(name.LastIndexOf("."));
@@ -93,7 +95,7 @@ namespace WebDirectory.Models.Directory
         {
             List<FileExtension> fileExtension = new List<FileExtension>()
             {   
-                new FileExtension(){FileTypeCode = 1,Type = "earmark", Icon = "/Content/icons/file-earmark.svg"},
+                new FileExtension(){FileTypeCode = 1,Type = "unknown", Icon = "/Content/icons/file-earmark.svg"},
                 new FileExtension(){FileTypeCode = 2,Type = ".txt", Icon = "/Content/icons/file-earmark-text.svg" },
                 new FileExtension(){FileTypeCode = 3,Type = ".doc", Icon = "/Content/icons/file-earmark-word.svg" },
                 new FileExtension(){FileTypeCode = 4,Type = ".zip", Icon = "/Content/icons/file-earmark-zip-fill.svg"},

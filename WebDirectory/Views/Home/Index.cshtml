@@ -175,44 +175,45 @@
             if (selectedNode && selectedNode.length > 0 && selectedNode[0].id != "0")
             {
                 var files = document.getElementById('file-input').files;
-                if (files.length > 0) {
-                if (window.FormData !== undefined) {
-                    var data = new FormData();
+                if (files.length > 0)
+                {
+                    if (window.FormData !== undefined) {
+                        var data = new FormData();
 
-                    if (selectedNode[0].original.type == "file") {
-                        data.append('id', selectedNode[0].original.parent);
-                    }
-                    else {
-                        data.append('id', selectedNode[0].original.id);
-                    }
-
-                    //Добавляем файлы
-                    for (var x = 0; x < files.length; x++) {
-                        data.append("file" + x, files[x]);
-                    }
-
-                    $.ajax({
-                        type: "POST",
-                        url: '@Url.Action("Upload", "Home")',
-                        contentType: false,
-                        processData: false,
-                        data : data,
-                        success: function (response) {
-                            console.log(response);
-                            if (response == true) {
-                                $('#jstree').jstree("refresh");
-                            }
-                            else {
-                                alert(response);
-                            }
+                        if (selectedNode[0].original.type == "file") {
+                            data.append('id', selectedNode[0].original.parent);
+                        }
+                        else {
+                            data.append('id', selectedNode[0].original.id);
                         }
 
-                    });
-                } else
-                {
-                    alert("Браузер не поддерживает загрузку файлов HTML5!");
+                        //Добавляем файлы
+                        for (var x = 0; x < files.length; x++) {
+                            data.append("file" + x, files[x]);
+                        }
+
+                        $.ajax({
+                            type: "POST",
+                            url: '@Url.Action("Upload", "Home")',
+                            contentType: false,
+                            processData: false,
+                            data : data,
+                            success: function (response) {
+                                console.log(response);
+                                if (response == true) {
+                                    $('#jstree').jstree("refresh");
+                                }
+                                else {
+                                    alert(response);
+                                }
+                            }
+
+                        });
+                    } else
+                    {
+                        alert("Браузер не поддерживает загрузку файлов HTML5!");
+                    }
                 }
-            }
 
             }
 

@@ -21,15 +21,12 @@ namespace WebDirectory.Controllers
         {
             return View();
         }
+        [HttpGet]
         public JsonResult GetTreeViewNode()
         {
             List<TreeViewNode> treeViewNode = new List<TreeViewNode>();
-            A_attr a_attr = new A_attr();
 
-            foreach(FileExtension fileExtension in directoryContext.FileExtensions)
-            {
-
-            }
+            foreach(FileExtension fileExtension in directoryContext.FileExtensions) { }
 
             foreach (Folder folder in directoryContext.Folders)
             {
@@ -42,12 +39,10 @@ namespace WebDirectory.Controllers
                 });
             }
 
-            List<Folder> folder1 = directoryContext.Folders.ToList();
-
 
             foreach(Files files in directoryContext.Files)
             {
-                a_attr = new A_attr() {title = files.Description};
+                A_attr a_attr = new A_attr() {title = files.Description};
                 treeViewNode.Add(new TreeViewNode() 
                 {
                     id = "file" + files.FileCode.ToString(), 
@@ -114,7 +109,7 @@ namespace WebDirectory.Controllers
             }
             catch(Exception e)
             {
-                return Json(e);
+                return Json(e.Message);
             }
 
       
@@ -136,7 +131,7 @@ namespace WebDirectory.Controllers
             }
             catch(Exception e)
             {
-                return Json(e);
+                return Json(e.Message);
             }
         }
 
@@ -227,7 +222,7 @@ namespace WebDirectory.Controllers
             }
             catch (Exception e)
             {
-                return Json(e.ToString());
+                return Json(e.Message);
             }
                 
         }
@@ -246,7 +241,6 @@ namespace WebDirectory.Controllers
         public FileResult GetStream(string id)
         {
             string path = PathName(id);
-            // Объект Stream
             FileStream fs = new FileStream(path, FileMode.Open);
             string file_type = "application/" + path.Substring(path.LastIndexOf(".") + 1);
             string file_name = path.Substring(path.LastIndexOf("\\") + 1);
