@@ -202,9 +202,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="App_Data\Directory.mdf" />
-    <Content Include="App_Data\Directory_log.ldf">
-      <DependentUpon>Directory.mdf</DependentUpon>
+    <Content Include="App_Data\DirectoryDatabase.mdf" />
+    <Content Include="App_Data\DirectoryDatabase_log.ldf">
+      <DependentUpon>DirectoryDatabase.mdf</DependentUpon>
     </Content>
     <Content Include="Content\bootstrap-grid.css" />
     <Content Include="Content\bootstrap-grid.min.css" />

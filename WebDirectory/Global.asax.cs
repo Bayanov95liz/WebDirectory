@@ -12,7 +12,6 @@ namespace WebDirectory
 {
     public class MvcApplication : System.Web.HttpApplication
     {
-        DirectoryContext directoryContext = new DirectoryContext();
 
         protected void Application_Start()
         {

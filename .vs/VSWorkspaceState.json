@@ -1,6 +1,12 @@
 {
   "ExpandedNodes": [
-    ""
+    "",
+    "\\WebDirectory",
+    "\\WebDirectory\\App_Data",
+    "\\WebDirectory\\App_Start",
+    "\\WebDirectory\\Views",
+    "\\WebDirectory\\Views\\Home",
+    "\\WebDirectory\\Views\\Shared"
   ],
   "SelectedNode": "\\WebDirectory.sln",
   "PreviewInSolutionExplorer": false
