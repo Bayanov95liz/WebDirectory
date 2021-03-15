@@ -22,3 +22,9 @@ select,
 textarea {
     max-width: 280px;
 }
+
+.jstreeScrollableBlock {
+    display: block;
+    overflow-x: auto;
+    overflow-y : hidden;
+}

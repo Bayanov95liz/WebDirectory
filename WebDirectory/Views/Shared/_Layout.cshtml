@@ -8,47 +8,53 @@
     @RenderSection("styles", required: false)
     @Scripts.Render("~/bundles/modernizr")
     <script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js"></script>
-    <link href="@Url.Content("~/Content/Site.css")" rel="stylesheet" type="text/css" />
 </head>
-<body >
-    <div class="navbar-nav bd-navbar-nav flex-row">
-        <div class="navbar-inner">
-            <div class="container">
-                <button type="button" onclick="CreateFolder()" class="btn btn_main">Создать Папку</button>
-                <button type="button" onclick="DeleteFolder()" class="btn btn_main">Удалить Папку</button>
+<body>
 
-                <button id="UploadFile" class="btn btn_main">Загрузить файл</button>
-                <input id="file-input" type="file" onchange="UploadFile()" name="upload" style="display: none;" />
+    <nav class="navbar fixed-top  bg-white">
+        <div class="container-fluid">
+                <div class="btn-group" role="group">
+                    <button type="button" onclick="CreateFolder()" class="btn btn_main">Создать Папку</button>
+                    <button type="button" onclick="DeleteFolder()" class="btn btn_main">Удалить Папку</button>
 
-                <button type="button" onclick="DowlandFile()" class="btn btn_main">Скачать файл</button>
-                <button type="button" onclick="DeleteFile()" class="btn btn_main">Удалить файл</button>
-                <button type="button" onclick="Rename()" class="btn btn_main">Переименовать</button>
-            </div>
-        </div>
-    </div>
+                    <button id="UploadFile" class="btn btn_main">Загрузить файл</button>
+                    <input id="file-input" type="file" onchange="UploadFile()" name="upload" style="display: none;" />
 
-    <div class="row">
-        <div class="col-md-4">
-            <div id="jstree">
-            </div>
-        </div>
-        <div class="col-md-8">
-            <nav>
-                <div class="nav nav-tabs" id="nav-tab" role="tablist">
-                    <a class="nav-item nav-link active" 
-                       id="new" data-bs-toggle="tab" 
-                       href="#nav-home" role="tab" 
-                       aria-controls="nav-home" 
-                       aria-selected="true">new
-                    </a>
+                    <button type="button" onclick="DowlandFile()" class="btn btn_main">Скачать файл</button>
+                    <button type="button" onclick="DeleteFile()" class="btn btn_main">Удалить файл</button>
+                    <button type="button" onclick="Rename()" class="btn btn_main">Переименовать</button>
                 </div>
-            </nav>
-            <div class="tab-content" id="nav-tabContent">
+        </div>
+    </nav>
 
+    <div class="container-fluid p-3">
+        <div class="row">
+            <div class="col-md-2">
+                <div class="jstreeScrollableBlock">
+                    <div id="jstree"></div>
+                </div>
+            </div>
+
+            <div class="col-md-10">
+                <nav>
+                    <div class="nav nav-tabs" id="nav-tab" role="tablist">
+                        <a class="nav-item nav-link active"
+                           id="new" data-bs-toggle="tab"
+                           href="#nav-home" role="tab"
+                           aria-controls="nav-home"
+                           aria-selected="true">
+                            new
+                        </a>
+                    </div>
+                </nav>
+                <div class="tab-content" id="nav-tabContent">
+
+                </div>
             </div>
         </div>
+
     </div>
-    @RenderBody()
+
     @Scripts.Render("~/bundles/jquery")
     @Scripts.Render("~/bundles/bootstrap")
     @RenderSection("scripts", required: false)
