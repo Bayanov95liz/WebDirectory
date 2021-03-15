@@ -16,6 +16,7 @@ namespace WebDirectory.Models.Directory
         public DbSet<Files> Files { get; set; }
         public DbSet<FileExtension> FileExtensions { get; set; }
 
+
         static DirectoryContext()
         {
             Database.SetInitializer<DirectoryContext>(new AppDbInitializer());
