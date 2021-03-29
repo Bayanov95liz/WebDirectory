@@ -1,22 +1,33 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web;
 using System.Web.Mvc;
 using WebDirectory.Models.Directory;
 using WebDirectory.Models.TreeView;
-using Newtonsoft.Json;
 using System.IO;
-using System.Data.Entity;
 
 namespace WebDirectory.Controllers
 {
     public class HomeController : Controller
     {
-        DirectoryContext directoryContext = new DirectoryContext();
-        string root = System.Web.HttpContext.Current.Server.MapPath("~/Files");
+        DirectoryContext directoryContext;
+        private string root;
 
-        [HttpGet]
+        public HomeController()
+        {
+            directoryContext = new DirectoryContext();
+
+            //Выполняю проверку на ошибку т.к при юнит тестировнии выводит null когда орбащаетя к Server.MapPath
+            try
+            {
+                root = System.Web.HttpContext.Current.Server.MapPath("/Files");
+            }
+            catch
+            {
+                root = "~/Files";
+            }
+        }
+
         public ActionResult Index()
         {
             return View();
@@ -276,6 +287,5 @@ namespace WebDirectory.Controllers
 
             return path;
         }
-
     }
 }
