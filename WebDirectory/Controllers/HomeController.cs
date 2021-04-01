@@ -11,33 +11,23 @@ namespace WebDirectory.Controllers
     public class HomeController : Controller
     {
         DirectoryContext directoryContext;
-        private string root;
+        string root;
 
         public HomeController()
         {
             directoryContext = new DirectoryContext();
-
-            //Выполняю проверку на ошибку т.к при юнит тестировнии выводит null когда орбащаетя к Server.MapPath
-            try
-            {
-                root = System.Web.HttpContext.Current.Server.MapPath("/Files");
-            }
-            catch
-            {
-                root = "~/Files";
-            }
+            root = "~/Files";
         }
 
         public ActionResult Index()
         {
             return View();
         }
+
         [HttpGet]
         public JsonResult GetTreeViewNode()
         {
             List<TreeViewNode> treeViewNode = new List<TreeViewNode>();
-
-            foreach(FileExtension fileExtension in directoryContext.FileExtensions) { }
 
             foreach (Folder folder in directoryContext.Folders)
             {
@@ -49,7 +39,6 @@ namespace WebDirectory.Controllers
                     type = "folder" 
                 });
             }
-
 
             foreach(Files files in directoryContext.Files)
             {
