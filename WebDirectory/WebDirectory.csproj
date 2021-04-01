@@ -197,8 +197,13 @@
     <Compile Include="Models\Directory\FileExtension.cs" />
     <Compile Include="Models\Directory\Files.cs" />
     <Compile Include="Models\Directory\Folder.cs" />
+    <Compile Include="Models\Repository\FileExtensionRepository.cs" />
+    <Compile Include="Models\Repository\FilesRepository.cs" />
+    <Compile Include="Models\Repository\FolderRepository.cs" />
+    <Compile Include="Models\Repository\IRepository.cs" />
     <Compile Include="Models\TreeView\A_attr.cs" />
     <Compile Include="Models\TreeView\TreeViewNode.cs" />
+    <Compile Include="Models\UnitOfWork\UnitOfWork .cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

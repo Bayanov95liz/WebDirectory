@@ -5,18 +5,20 @@ using System.Web.Mvc;
 using WebDirectory.Models.Directory;
 using WebDirectory.Models.TreeView;
 using System.IO;
+using WebDirectory.Models.UnitOfWork;
+using Newtonsoft.Json;
 
 namespace WebDirectory.Controllers
 {
     public class HomeController : Controller
     {
-        DirectoryContext directoryContext;
         string root;
+        UnitOfWork unitOfWork;
 
         public HomeController()
         {
-            directoryContext = new DirectoryContext();
-            root = "~/Files";
+            root = System.Web.Hosting.HostingEnvironment.MapPath("/Files");
+            unitOfWork = new UnitOfWork();
         }
 
         public ActionResult Index()
@@ -25,22 +27,22 @@ namespace WebDirectory.Controllers
         }
 
         [HttpGet]
-        public JsonResult GetTreeViewNode()
+        public ActionResult GetTreeViewNode()
         {
             List<TreeViewNode> treeViewNode = new List<TreeViewNode>();
 
-            foreach (Folder folder in directoryContext.Folders)
+            foreach (Folder folder in unitOfWork.Folders.GetAll())
             {
-                treeViewNode.Add(new TreeViewNode() 
-                { 
+                treeViewNode.Add(new TreeViewNode()
+                {
                     id = folder.FolderCode.ToString(),
-                    parent = folder.CodeOfTheParentFolder, 
+                    parent = folder.CodeOfTheParentFolder,
                     text = folder.Name,
-                    type = "folder" 
+                    type = "folder"
                 });
             }
 
-            foreach(Files files in directoryContext.Files)
+            foreach (Files files in unitOfWork.Files.GetAll())
             {
                 A_attr a_attr = new A_attr() {title = files.Description};
                 treeViewNode.Add(new TreeViewNode() 
@@ -60,50 +62,55 @@ namespace WebDirectory.Controllers
         [HttpPost]
         public ActionResult Rename(string id,string name)
         {
+            string path, newPath;
+
             try
             {
-                string path = PathName(id);
-
-                string newPath = path.Substring(0, path.LastIndexOf("\\") + 1) + name;
+                path = PathName(id);
+                newPath = path.Substring(0, path.LastIndexOf("\\") + 1) + name;
 
                 Directory.Move(path, newPath);
 
                 if (id.Contains("file") == true)
                 {
                     id = id.Replace("file", "");
-                    directoryContext.Files.First(x => x.FileCode.ToString() == id).Name = name;
+                    Files files = unitOfWork.Files.Get(Convert.ToInt32(id));
+                    files.Name = name;
+                    unitOfWork.Files.Update(files);
+                    unitOfWork.Save();
+
                 }
                 else
                 {
-                    directoryContext.Folders.First(x => x.FolderCode.ToString() == id).Name = name;
+                    Folder folder = unitOfWork.Folders.Get(Convert.ToInt32(id));
+                    folder.Name = name;
+                    unitOfWork.Folders.Update(folder);
+                    unitOfWork.Save();
                 }
 
-                directoryContext.SaveChanges();
+
                 return Json(true);
             }
             catch(Exception e)
             {
-                return Json(e.ToString());
+                return Json(e.Message);
             }
         }
-
+      
         [HttpPost]
         public ActionResult DeleteFile(string id)
         {
             string path = PathName(id);
 
             id = id.Replace("file","");
+
             try
             {
 
                 System.IO.File.Delete(path);
 
-                Files file = directoryContext.Files
-                    .Where(x => x.FileCode.ToString() == id)
-                    .FirstOrDefault();
-
-                directoryContext.Files.Remove(file);
-                directoryContext.SaveChanges();
+                unitOfWork.Files.Delete(Convert.ToInt32(id));
+                unitOfWork.Save();
 
                 return Json(true);
             }
@@ -124,8 +131,8 @@ namespace WebDirectory.Controllers
             {
                 Directory.Delete(path,true);
 
-                AppDbInitializer appDbInitializer = new AppDbInitializer();
-                appDbInitializer.InitializeDatabase(new DirectoryContext());
+                unitOfWork.Folders.Delete(Convert.ToInt32(id));
+                unitOfWork.Save();
 
                 return Json(true);
             }
@@ -153,11 +160,15 @@ namespace WebDirectory.Controllers
 
             try
             {
-
                 var value =  Directory.CreateDirectory(path + count).Exists;
 
-                directoryContext.Folders.Add(new Folder() { Name = name + count, CodeOfTheParentFolder = id});
-                directoryContext.SaveChanges();
+                unitOfWork.Folders.Create(new Folder()
+                {
+                    Name = name + count,
+                    CodeOfTheParentFolder = id
+                });
+
+                unitOfWork.Save();
 
                 return Json(true);
             }
@@ -185,7 +196,6 @@ namespace WebDirectory.Controllers
                     {
 
                         AppDbInitializer appDbInitializer = new AppDbInitializer();
-                        List<FileExtension> fileExtensions = directoryContext.FileExtensions.ToList();
                         string name = upload.FileName;
                         string pathFileName = path + "\\" + name;
 
@@ -199,11 +209,11 @@ namespace WebDirectory.Controllers
                         {
                             upload.SaveAs(pathFileName);
 
-                            int typeCodeOfTheFile = appDbInitializer.GetTypeCodeOfTheFile(fileExtensions, name);
+                            int typeCodeOfTheFile = appDbInitializer.GetTypeCodeOfTheFile(unitOfWork.FileExtensions.GetAll().ToList(), name);
                             string content = appDbInitializer.GetContent(pathFileName);
                             string description = appDbInitializer.GetDescription(content);
 
-                            directoryContext.Files.Add(new Files()
+                            unitOfWork.Files.Create(new Files()
                             {
                                 Name = name,
                                 FolderCode = Convert.ToInt32(id),
@@ -212,7 +222,7 @@ namespace WebDirectory.Controllers
                                 Description = description,
                             });
 
-                            directoryContext.SaveChanges();
+                            unitOfWork.Save();
                         }
                     }
                 }
@@ -231,9 +241,11 @@ namespace WebDirectory.Controllers
         [HttpPost]
         public ActionResult GetContentFile(string id)
         {
-            id = id.Replace("file", "");
+            int _id = Convert.ToInt32(id.Replace("file", ""));
 
-            string content = directoryContext.Files.First(x => x.FileCode.ToString() == id).Content.ToString();
+            Files files = unitOfWork.Files.Get(_id);
+
+            string content = files.Content; 
 
             return Json(content, JsonRequestBehavior.AllowGet);
         }
@@ -247,34 +259,42 @@ namespace WebDirectory.Controllers
             return File(fs, file_type,file_name);
         }
 
+
         private string PathName(string id)
         {
             string path = "";
-            string name;
 
             if(id.Contains("file") == true)
             {
                 id = id.Replace("file", "");
-                name = directoryContext.Files.First(x => x.FileCode.ToString() == id).Name.ToString();
 
-                path = path.Insert(0, "\\" + name);
+                Files files = unitOfWork.Files.Get(Convert.ToInt32(id));
 
-                id = directoryContext.Files.First(x => x.FileCode.ToString() == id).FolderCode.ToString();
+                path = path.Insert(0, "\\" + files.Name);
+
+                id = files.FolderCode.ToString();
 
             }
 
             while (id != "#")
             {
-                name = directoryContext.Folders.First(x => x.FolderCode.ToString() == id).Name.ToString();
+                Folder folder = unitOfWork.Folders.Get(Convert.ToInt32(id));
 
-                path = path.Insert(0, "\\" + name);
+                path = path.Insert(0, "\\" + folder.Name);
 
-                id = directoryContext.Folders.First(x => x.FolderCode.ToString() == id).CodeOfTheParentFolder.ToString();
+                id = folder.CodeOfTheParentFolder.ToString();
             }
 
             path = path.Insert(0, root);
 
             return path;
+        }
+
+       
+        protected override void Dispose(bool disposing)
+        {
+            unitOfWork.Dispose();
+            base.Dispose(disposing);
         }
     }
 }
