@@ -4,6 +4,7 @@ using System.Data.Entity;
 using System.Linq;
 using System.Web;
 using WebDirectory.Models.Directory;
+using WebDirectory.Models.Interfaces;
 
 namespace WebDirectory.Models.Repository
 {
