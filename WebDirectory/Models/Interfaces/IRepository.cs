@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace WebDirectory.Models.Repository
+namespace WebDirectory.Models.Interfaces
 {
     interface IRepository <T> where T : class
     {
