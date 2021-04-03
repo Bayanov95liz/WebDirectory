@@ -15,5 +15,6 @@ namespace WebDirectory.Models.Interfaces
         IRepository<Folder> Folders { get;}
 
         void Save();
+
     }
 }

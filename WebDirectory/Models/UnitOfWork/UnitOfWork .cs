@@ -17,9 +17,9 @@ namespace WebDirectory.Models.UnitOfWork
         private FolderRepository folderRepository;
         private FileExtensionRepository fileExtensionRepository;
 
-        public UnitOfWork(string connectionString)
+        public UnitOfWork()
         {
-            db = new DirectoryContext(connectionString);
+            db = new DirectoryContext();
         }
 
         private bool disposed = false;
