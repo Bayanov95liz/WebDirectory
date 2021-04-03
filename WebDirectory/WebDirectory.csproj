@@ -197,6 +197,7 @@
     <Compile Include="Models\Directory\FileExtension.cs" />
     <Compile Include="Models\Directory\Files.cs" />
     <Compile Include="Models\Directory\Folder.cs" />
+    <Compile Include="Models\Interfaces\IUnitOfWork.cs" />
     <Compile Include="Models\Repositories\FileExtensionRepository.cs" />
     <Compile Include="Models\Repositories\FilesRepository.cs" />
     <Compile Include="Models\Repositories\FolderRepository.cs" />
