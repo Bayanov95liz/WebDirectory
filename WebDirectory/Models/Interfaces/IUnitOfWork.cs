@@ -4,14 +4,15 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using WebDirectory.Models.Directory;
+using WebDirectory.Models.UnitOfWork;
 
 namespace WebDirectory.Models.Interfaces
 {
-    interface IUnitOfWork : IDisposable
+    public interface IUnitOfWork : IDisposable
     {
-        IRepository<Files> Files { get; set; }
-        IRepository<FileExtension> FileExtensions { get; set; }
-        IRepository<Folder> Folders { get; set; }
+        IRepository<Files> Files { get; }
+        IRepository<FileExtension> FileExtensions{ get;}
+        IRepository<Folder> Folders { get;}
 
         void Save();
     }

@@ -3,22 +3,28 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using WebDirectory.Models.Directory;
+using WebDirectory.Models.Interfaces;
 using WebDirectory.Models.Repository;
+
 
 namespace WebDirectory.Models.UnitOfWork
 {
-    public class UnitOfWork : IDisposable
+    public class UnitOfWork : IUnitOfWork
     {
 
-        private DirectoryContext db = new DirectoryContext();
+        private DirectoryContext db;
         private FilesRepository filesRepository;
         private FolderRepository folderRepository;
         private FileExtensionRepository fileExtensionRepository;
 
+        public UnitOfWork(string connectionString)
+        {
+            db = new DirectoryContext(connectionString);
+        }
+
         private bool disposed = false;
 
-
-        public FilesRepository Files
+        public IRepository<Files> Files
         {
             get
             {
@@ -27,23 +33,26 @@ namespace WebDirectory.Models.UnitOfWork
                 return filesRepository;
             }
         }
-        public FolderRepository Folders
+        public IRepository<FileExtension> FileExtensions
+        {
+            get 
+            {
+
+                if (fileExtensionRepository == null)
+                    fileExtensionRepository = new FileExtensionRepository(db);
+                return fileExtensionRepository;
+            }
+        }
+
+
+        public IRepository<Folder> Folders
         {
             get
             {
                 if (folderRepository == null)
                     folderRepository = new FolderRepository(db);
                 return folderRepository;
-            }
         }
-        public FileExtensionRepository FileExtensions
-        {
-            get
-            {
-                if (fileExtensionRepository == null)
-                    fileExtensionRepository = new FileExtensionRepository(db);
-                return fileExtensionRepository;
-            }
         }
 
         public void Save()

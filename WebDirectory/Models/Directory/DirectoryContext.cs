@@ -20,6 +20,10 @@ namespace WebDirectory.Models.Directory
         {
             Database.SetInitializer<DirectoryContext>(new AppDbInitializer());
         }
+        public DirectoryContext(string connectionString) :base(connectionString)
+        {
+
+        }
 
     }
 }
